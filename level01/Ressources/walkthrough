@@ -1,0 +1,9 @@
+./level01 -> demande d'un username, test avec 'AAAA' -> incorrect username
+
+Apres dissas -> username = dat_wil
+
+Demande d'un password ensuite -> segfault possible apres le "nope, incorrect password"
+
+addresse system : 0xf7e6aed0 
+
+-> possibilité de lancer /bin/bash avec system ?

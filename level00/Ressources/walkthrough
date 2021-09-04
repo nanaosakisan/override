@@ -1,0 +1,4 @@
+./level00 -> demande d'un mdp
+
+Premier niveau assez simple, la reconstitution du code source permet de mettre en 
+evidence une comparaison qui donne acces à un shell.
