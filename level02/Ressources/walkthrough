@@ -1,0 +1,8 @@
+C'est encore un programme qui attend un username et un mdp.
+
+Si on entre un tres grand username on remarque que l'entrée attendue pour le mdp 
+n'est pas demandé et les "*" du puts du dessous s'affichent : on a écrit dans le buf
+du mdp depuis la premiere entrée ?
+
+system("/bin/sh") qui peut se lancer en resolvant une condition. Comment résoudre la
+condition ?

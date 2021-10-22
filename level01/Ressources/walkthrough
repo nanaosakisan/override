@@ -4,6 +4,28 @@ Apres dissas -> username = dat_wil
 
 Demande d'un password ensuite -> segfault possible apres le "nope, incorrect password"
 
-addresse system : 0xf7e6aed0 
+On a un programme qui demande un username et un mdp. Apres disas on constate que le
+username attendu est "dat_wil" et le mdp "admin". Cependant même si le mdp entré est
+ok le programme nous dit que non et quitte.
 
--> possibilité de lancer /bin/bash avec system ?
+On tente alors de voir si un overflow est possible :
+- sur le username -> meme avec beaucoup de caratere pas de segfault
+- sur le mdp -> quand on rentre beaucoup de caratere on remarque un segfault !
+
+On constate avec "objdump -t level01" qu'il n'y a pas de fonction caché mais une
+variable globale :
+0804a040 g     O .bss	00000064              a_user_name
+
+On ne pourra donc pas faire appel a une fonction qui lancerait un /bin/sh avec les 
+droit de level02 donc peut etre doit-on nous même placé du shellcode pour l'executer.
+
+La taille de la variable globale est assez grande pour contenir notre shellcode et on
+connaitra son adresse : 0804a040 + 7 = 0804a047 (adresse de la variable + 7 char du 
+"dat_wil").
+
+Ensuite, on a besoin de connaitre le padding necessaire à l'overflow pour le mdp. On
+peut utiliser le site pour nous aider : 
+https://wiremask.eu/tools/buffer-overflow-pattern-generator/?
+
+L'offset est de 80. On peut donc faire notre exploit avec ces infos et le lancer !
+cat /tmp/exploit1 - | ./level01
