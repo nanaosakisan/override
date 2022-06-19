@@ -1,0 +1,19 @@
+C'est un programme qui ne demande qu'un mdp.
+
+En decompilant on voit que ce mdp est soustrait a un autre int. Le resultat de 
+cette soustraction est envoyé dans une fonction decrypt si il fait parti du 
+switch sinon la fonction decrypt est lancée avec un nombre random.
+
+La fonction decrypte applique une XOR operation (^, OU exclusif) sur une string. 
+Si le resultat du XOR donne "Congratulation!" alors un bin/sh est lancé.
+
+J'ai créé un petit programme qui applique cette opération sur la premiere
+lettre du mot a decrypter pour trouver quel nombre il faut utiliser. Le
+resultat est 18. Sachant que juste avant on a une soustraction entre notre
+input et un nombre nous devons resoudre l'equation suivante :
+
+18 = 322424845 - x
+x = 322424845 - 18
+x = 322424827
+
+Le mdp que l'on doit rentrer est donc 322424827
