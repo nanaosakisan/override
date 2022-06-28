@@ -1,21 +1,25 @@
+#include <stdio.h>
+#include <stdlib.h>
+
 int main(int ac, char **av)
 {
     int read;
     char buf[42];
     char username[100];
     char pass[100];
+    int fd;
 
-    fd = fopen("/home/users/level03/.pass", r);
+    fd = fopen("/home/users/level03/.pass", "r");
     if (!fd)
     {
         fwrite("ERROR: failed to open password file\n", 1, 37, stderr);
         exit(1);
     }
-    read = fread(buf, 1, 41, fd); 
+    read = fread(buf, 1, 41, fd);
     buf[strcspn(buf, "\n")] = 0;
     if (read != 41)
     {
-        fwrite("ERROR: failed to read password file\n", 1, 37,stderr);
+        fwrite("ERROR: failed to read password file\n", 1, 37, stderr);
         fwrite("ERROR: failed to read password file\n", 1, 37, stderr);
         exit(1);
     }
