@@ -35,6 +35,8 @@ Et un breakpoint sur ma fonction store_number
 (gdb) x $ebp+0x8
 0xffffd520:	0xffffd544
 
+
+Calculatrice hexa : https://www.calculator.net/hex-calculator.html?number1=40000071&c2op=%2B&number2=1&calctype=op&x=49&y=21
 0xffffd70c - 0xffffd544 = 456 
 456 / 4 = 114
 
