@@ -1,0 +1,17 @@
+Le programme creer un objet message dans lequel un username et un message sont enregistres.
+
+On remarque la presence d'une fonction secret_backdoor qui lance un system() a partir d'un 
+buffer rempli avec la stdin.
+
+Si je rentre un tres grand username, le programme ne demande pas de message et affiche 
+>>: >: Msg sent! directement.
+
+Presence d'un strncpy qui est vulnerable.
+
+Adresse secret_backdoor :
+(gdb) info address secret_backdoor 
+Symbol "secret_backdoor" is at 0x88c in a file compiled without debugging.
+
+
+Check heap:
+x/100x 0x804a008
