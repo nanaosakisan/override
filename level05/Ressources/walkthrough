@@ -1,0 +1,25 @@
+Un programme qui nous renvoie la string en input mais en minuscule
+
+Dans le code source on peut voir un printf vulnérable par une format string 
+attack.
+
+La première étape est de déterminer à partir de quelle position on peut 
+écrire sur la stack :
+python -c 'print "AAAA"+" %x"*15' | ./level05
+     1      2        3        4     5    6       7         8      9
+aaaa 64 f7fcfac0 f7ec3af9 ffffd67f ffffd67e 0 ffffffff ffffd704 f7fdb000 
+    10 -> correspond au A en minuscule (passé dans le tolower)
+61616161 20782520 25207825 78252078 20782520 25207825
+
+On peut écrire à partir de la 9ème position.
+
+L'objectif va donc être de remplacer l'adress du exit dans la GOT avec 
+l' adresse de notre shellcode qui sera stocké dans une variable d'environnement
+(pour ne pas être modifié par le tolower).
+
+disas exit
+Dump of assembler code for function exit@plt:
+   0x08048370 <+0>:     jmp    *0x80497e0 -> adresse de notre exit
+
+On va donc overwrite l'adresse du exit dans la GOT avec l'adresse de notre 
+SHELLCODE

