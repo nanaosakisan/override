@@ -1,0 +1,24 @@
+C'est un programme qui demande un username et un serial number
+
+Ces deux valeurs passent dans une fonction auth qui, si elle 
+retourne 0 lance un shell.
+
+Pour que la fonction auth retourne 0, le serial doit être égal à un
+hash.
+
+Pour obtenir le hash on v lancer le programme dans gdb.
+On va mettre 2 break points :
+b *0x080487ba -> juste après le ptrace pour modifier sa valeur 
+                et pouvoir continuer dans le programme
+b *0x08048866 -> au moment de la comparaison pour récupérer la valeur
+                du hash
+
+Quand on arrive au 1er breakpoint : set $eax=1
+Pour print la valeur du hash : x $ebp-0x10 -> 0x005f216a
+(dans $eax on retrouve le serial qu'on a rentré !)
+
+Maintenant que j'ai le hash je peux le convertir en hexa :
+0x005f216a -> 6234474
+
+Il ne reste plus qu'à lancer le programme avec mon login et le bon
+serial !
