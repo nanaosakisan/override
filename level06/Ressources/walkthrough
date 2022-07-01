@@ -4,16 +4,21 @@ Ces deux valeurs passent dans une fonction auth qui, si elle
 retourne 0 lance un shell.
 
 Pour que la fonction auth retourne 0, le serial doit être égal à un
-hash.
+hash. Le hash prend en compte le username rentre donc il faut en 
+choisir un et ne pas en changer !
 
 Pour obtenir le hash on v lancer le programme dans gdb.
-On va mettre 2 break points :
+On va mettre 2 breakpoints :
 b *0x080487ba -> juste après le ptrace pour modifier sa valeur 
                 et pouvoir continuer dans le programme
 b *0x08048866 -> au moment de la comparaison pour récupérer la valeur
                 du hash
 
-Quand on arrive au 1er breakpoint : set $eax=1
+username -> iporsenn
+
+Quand on arrive au 1er breakpoint : set $eax=1 -> pour passer le ptrace
+
+Au deuxieme breakpoint
 Pour print la valeur du hash : x $ebp-0x10 -> 0x005f216a
 (dans $eax on retrouve le serial qu'on a rentré !)
 

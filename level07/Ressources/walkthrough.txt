@@ -2,11 +2,10 @@ C' est un programme qui permet de stocker etlire des nombres, certains index du 
 sont recerve et on ne peut pas ecrire directement dedans (tous les multiples de 3 et 0)
 
 Au debut du programme les variables d'environnement sont memset, on peut donc pas 
-stocker de shell code dedans. On va donc faire un ret2libc avec un overwrite de l'eip
-par l'adresse de system() et comme argument "/bin/sh"
+stocker de shell code dedans. On va donc faire un ret2libc avec un overwrite de l'eip 
+au moment de quitter le programme par l'adresse de system() et l'argument "/bin/sh"
 
 Faire un ret2libc : https://beta.hackndo.com/retour-a-la-libc/
-
 
 Pour trouver l'adresse de system il faut mettre un breakpoint sur main et lancer le 
 programme (car system n'est pas utilise de base par le programme). Comme on stocke des
@@ -22,7 +21,6 @@ adresse "/bin/sh" : 0xf7f897ec -> 4160264172
 
 C'est les deux varibles qu'on va devoir stocker dans le tableau. On va devoir overwrite
 l'eip avec l'adresse de system pour prendre le controle du programme et lancer le shell.
-
 
 Pour calculer l'offset de l'eip, je met un breakpoint juste avant de quitter le 
 programme et j'affiche le premier element de la stack:
@@ -41,12 +39,14 @@ Calculatrice hexa : https://www.calculator.net/hex-calculator.html?number1=40000
 456 / 4 = 114
 
 Offset de eip = 114
+Le probleme c'est que 114 est un multiple de 3, donc on ne peut pas stoker dessus.
 
 On peut tout de meme stocke des trucs sur les index reserve avec un petit trick qui 
-overflow le veritable index du tableau ?
+overflow le veritable index du tableau
 
 // On va donc overflow l'uint32
-0xffffffff / 4 + 114 + 1 = 1073741938
+0xffffffff / 4 + 114 + 1 = 1 073 741 938
+                           4 294 967 295
 
 Stoker dans le programme:
 4160264172 index 116 

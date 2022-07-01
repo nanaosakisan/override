@@ -4,15 +4,15 @@ On peut voir deux choses intéressantes :
 - le mdp du level3 est lu et enregistré dans un buffer
 - un system("/bin/sh") est présent dans une condition
 
-On a tout d'abord chercher comment le shell pouvait être executé mais impossible de 
+J'ai tout d'abord chercher comment le shell pouvait être executé mais impossible de 
 trouver une solution. Fausse piste ?
 
-On s'est finalement rendu compte qu'il y avait plusieurs printf qui étaient 
-exploitables et on s'est souvenu que le mdp lu au début du programme était stocké
+Je me suis finalement rendu compte qu'il y avait plusieurs printf qui étaient 
+exploitables et je me suis souvenue que le mdp lu au début du programme était stocké
 dans un buffer sur la stack ! Il est donc possible de le lire avec les printf via
 %x ou %p.
 
-On a donc lancé le programme avec de nombreux %x en username :
+J'ai donc lancé le programme avec de nombreux %x en username :
 %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x 
 
 -> ffffe3d0 0 62 2a2a2a2a 2a2a2a2a ffffe5c8 f7ff9a08 62626262 0 0 0 0 0 0 0 0 0 0 0 

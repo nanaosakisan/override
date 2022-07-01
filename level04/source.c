@@ -11,9 +11,9 @@ int main()
     pid_t waitedPid = 0;
     pid_t backupPid;
     pid_t thirdPid;
-    int var2 = 0;
+    int ret = 0;
 
-    pid_t pid = fork(); // ESP + 0xac
+    pid_t pid = fork(); 
 
     memset(buffer, 0, 32);
     
@@ -34,7 +34,7 @@ int main()
             return 0;
         }
 
-        if (ptrace(3, ret, 0x2c, 0) == 0xb) { // If syscall exec
+        if (ptrace(3, ret, 44, 0) == 11) { // If syscall exec
             puts("no exec() for you");
             kill(ret, 9);
         }

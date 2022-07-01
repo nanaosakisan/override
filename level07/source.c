@@ -49,7 +49,7 @@ int store_number(int *buffer)
         puts(" *** ERROR! ***");
         return 1;
     }
-    buffer[index] = number;
+    buffer[index * 4] = number;
     return 0;
 }
 
@@ -59,7 +59,7 @@ int read_number(int *buffer)
 
     printf(" Index:");
     index = get_unum();
-    printf(" Number at data[%u] is %u\n", index, buffer[index]);
+    printf(" Number at data[%u] is %u\n", index, buffer[index * 4]);
     return 0;
 }
 

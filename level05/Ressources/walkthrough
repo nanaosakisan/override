@@ -21,5 +21,3 @@ disas exit
 Dump of assembler code for function exit@plt:
    0x08048370 <+0>:     jmp    *0x80497e0 -> adresse de notre exit
 
-On va donc overwrite l'adresse du exit dans la GOT avec l'adresse de notre 
-SHELLCODE

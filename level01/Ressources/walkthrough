@@ -17,7 +17,7 @@ variable globale :
 0804a040 g     O .bss	00000064              a_user_name
 
 On ne pourra donc pas faire appel a une fonction qui lancerait un /bin/sh avec les 
-droit de level02 donc peut etre doit-on nous même placé du shellcode pour l'executer.
+droit de level02 donc on doit nous même placer du shellcode pour l'executer.
 
 La taille de la variable globale est assez grande pour contenir notre shellcode et on
 connaitra son adresse : 0804a040 + 7 = 0804a047 (adresse de la variable + 7 char du 

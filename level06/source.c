@@ -19,21 +19,6 @@ int auth(char *login_str, unsigned int serial)
 		puts("\e[32m.---------------------------.");
 		return 1;
 	}
-	
-	int hash;
-	hash = ((int) (login_str[3])) ^ 0x1337 + 0x5eeded; 
-
-	// for (int i = 0; i < login_len; i++) {
-	// 	if (login_str[i] <= 31)
-	// 		return 1;
-		
-	// 	// Algorythm translated to code
-	// 	int tmp1 = login_str[i] ^ hash;
-    //     int tmp2 = 0x88233b2b * tmp1;
-	// 	int tmp3 = (tmp1 - tmp2) / 2;
-    //     int tmp4 = (tmp3 + tmp2) / 1024 * 0x539;
-    //     hash += tmp1 - tmp4;
-	// }
 
 	int hash = ((0xff & (char)(*login_str + 3)) ^ 0x1337) + 0x5eeded;
 	int tmp = 0;
@@ -41,11 +26,9 @@ int auth(char *login_str, unsigned int serial)
 	while (tmp < login_len)
 	{
 		if (login_str[tmp] <= 31) return 1;
-		hash += hash_func(login_str[tmp++]); //hash_func ?
+		hash += hash_func(login_str[tmp++]); //has avec toutes sortes d'operation
 	}
 
-	
-	//printf("hash: %d\n", hash);
 	if (hash == serial)
 		return 0;
 	else

@@ -8,9 +8,9 @@ int verify_user_name(char *a_user_name)
     return (0);
 }
 
-int verify_user_pass(char *a_user_name)
+int verify_user_pass(char *a_user_pass)
 {
-    if (strcmp("admin", a_user_pass) == 0)
+    if (strncmp("admin", a_user_pass, 5) == 0)
         return (1);
     return (0);
 }
@@ -26,7 +26,7 @@ int main (int ac, char **av)
     {
         puts("Enter Password: ");
         fgets(buff, 100, 1);
-        if (verify_user_pass(a_user_pass) == 0 | verify_user_pass(a_user_pass) != 0)
+        if (verify_user_pass(buff) == 0 | verify_user_pass(buff) != 0)
             puts("nope, incorrect password...\n");
     }
     puts("nope, incorrect username...\n");

@@ -5,7 +5,7 @@ int main(int ac, char **av)
     puts("***********************************");
     printf("Password:");
     scanf("%d", );
-    if (5276 = av[1])
+    if (av[1] == 5276)
     {
         puts("\nAuthenticated!");
         system("/bin/sh");
