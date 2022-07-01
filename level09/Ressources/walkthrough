@@ -8,10 +8,16 @@ Si je rentre un tres grand username, le programme ne demande pas de message et a
 
 Presence d'un strncpy qui est vulnerable.
 
+L'objectif est de faire un overflow avec le strncpy qui va modifier la longueur len (dans la structure) qui va provoquer un second buffer overflow. Avec ce second buffer overflow on pourra lancer la fonction secret_backdoor.
+
+La difficulte de cet exo est que le programme est complile en 64b.
+Tous les e dans les noms de variables sont remplace par des r:
+eip -> rip
+esp -> rsp
+
 Adresse secret_backdoor :
-(gdb) info address secret_backdoor 
-Symbol "secret_backdoor" is at 0x88c in a file compiled without debugging.
+(gdb) p secret_backdoor
+$2 = {<text variable, no debug info>} 0x55555555488c <secret_backdoor>
 
+La taille du username est de 40,
 
-Check heap:
-x/100x 0x804a008
